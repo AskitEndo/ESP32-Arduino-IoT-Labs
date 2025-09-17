@@ -1,47 +1,42 @@
-
 // Define LED pins
-int oddLEDs[] = {2, 4, 6};  // Odd-numbered LEDs
-int evenLEDs[] = {3, 5, 7}; // Even-numbered LEDs
-int delayTime = 500;        // Delay between blinking in milliseconds
+const int redLEDPin = 4;   // GPIO 4 for red (odd)
+const int blueLEDPin = 13; // GPIO 13 for blue (even)
+
+unsigned long lastSerialPrint = 0;
+int number = 1; // Start from 1
 
 void setup()
 {
-    // Initialize odd LEDs as OUTPUT
-    for (int i = 0; i < 3; i++)
-    {
-        pinMode(oddLEDs[i], OUTPUT);
-        pinMode(evenLEDs[i], OUTPUT);
-    }
+    pinMode(redLEDPin, OUTPUT);
+    pinMode(blueLEDPin, OUTPUT);
+    Serial.begin(115200); // Start serial communication
 }
 
 void loop()
 {
-    // Blink odd LEDs ON
-    for (int i = 0; i < 3; i++)
-    {
-        digitalWrite(oddLEDs[i], HIGH); // Turn ON odd LEDs
-    }
-    delay(delayTime); // Wait for the specified delay
+    // Blink red LED (odd)
+    digitalWrite(redLEDPin, HIGH);
+    digitalWrite(blueLEDPin, LOW);
+    delay(500);
 
-    // Blink odd LEDs OFF
-    for (int i = 0; i < 3; i++)
-    {
-        digitalWrite(oddLEDs[i], LOW); // Turn OFF odd LEDs
-    }
+    // Blink blue LED (even)
+    digitalWrite(redLEDPin, LOW);
+    digitalWrite(blueLEDPin, HIGH);
+    delay(500);
 
-    // Blink even LEDs ON
-    for (int i = 0; i < 3; i++)
+    // Check if 1000ms passed for serial print
+    if (millis() - lastSerialPrint >= 1000)
     {
-        digitalWrite(evenLEDs[i], HIGH); // Turn ON even LEDs
+        if (number % 2 == 0)
+        {
+            Serial.print("Even: ");
+        }
+        else
+        {
+            Serial.print("Odd: ");
+        }
+        Serial.println(number);
+        number++;                   // Increment number
+        lastSerialPrint = millis(); // Reset timer
     }
-    delay(delayTime); // Wait for the specified delay
-
-    // Blink even LEDs OFF
-    for (int i = 0; i < 3; i++)
-    {
-        digitalWrite(evenLEDs[i], LOW); // Turn OFF even LEDs
-    }
-
-    // Add some delay between cycles (optional)
-    delay(delayTime);
 }
